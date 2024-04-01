@@ -1,0 +1,101 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+  previewFeatures = ["fullTextIndex", "fullTextSearch", "relationJoins"]
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id  String  @id @default(uuid())
+  username  String  
+  email String  @unique
+  hashed_password  String
+  isAdmin Boolean
+
+  sessions Session[]
+  forms Form[]
+  responses Response[]
+
+  @@map("user")
+}
+
+model Session {
+  id  String  @id
+  user  User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId  String
+  expiresAt DateTime
+
+  @@map("session")
+}
+
+model Form {
+  id  String  @id @default(cuid())
+  user  User  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId  String
+  name  String
+  description String?
+  isAnonymous Boolean @default(false)
+  visits  Int @default(0)
+  createdAt DateTime  @default(now())
+
+  questions  Question[]
+  responses  Response[]
+
+  @@map("form")
+}
+
+model Question {
+  id  Int @id @default(autoincrement())
+  form  Form @relation(fields: [formId], references: [id], onDelete: Cascade)
+  formId  String
+  idElement String @db.VarChar(5)
+  label  String
+  type  QuestionType
+  required  Boolean
+  option  Json?
+
+  answers Answer[]
+
+  @@map("question")
+}
+
+enum QuestionType {
+  Text
+  MultipleChoice
+  Paragraph
+  Select
+  Checkbox
+}
+
+model Response {
+  id  Int @id @default(autoincrement())
+  form  Form @relation(fields: [formId], references: [id], onDelete: Cascade)
+  formId  String
+  user  User?  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId  String?
+  date  DateTime  @default(now())
+
+  answers Answer[]
+
+  @@map("responses")
+}
+
+model Answer {
+  id  Int @id @default(autoincrement())
+  response  Response @relation(fields: [responseId], references: [id], onDelete: Cascade)
+  responseId  Int
+  question  Question @relation(fields: [questionId], references: [id])
+  questionId  Int
+  value String  @db.Text
+
+  @@map("answers")
+}
