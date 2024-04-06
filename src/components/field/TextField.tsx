@@ -247,14 +247,22 @@ export const ResultComponent = ({
         {label} {required && <span className='text-destructive'>*</span>}
       </CardHeader>
       <CardContent className='max-h-[60vh]'>
-        {values.map((value, index) => (
-          <div
-            key={index}
-            className='w-full px-2 py-3 bg-secondary text-secondary-foreground'
-          >
-            {value as string}
+        {values.length > 0 ? (
+          <>
+            {values.map((value, index) => (
+              <div
+                key={index}
+                className='w-full px-2 py-3 bg-secondary text-secondary-foreground'
+              >
+                {value as string}
+              </div>
+            ))}
+          </>
+        ) : (
+          <div className='w-full px-2 py-3 bg-secondary text-secondary-foreground'>
+            No Result
           </div>
-        ))}
+        )}
       </CardContent>
     </Card>
   )
