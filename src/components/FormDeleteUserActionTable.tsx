@@ -7,6 +7,7 @@ import { DeleteUserById } from '@/lib/actions/user'
 import { toast } from './ui/use-toast'
 import { DialogClose, DialogFooter } from './ui/dialog'
 import { Button } from './ui/button'
+import { useRef } from 'react'
 
 export default function FormDeleteUserActionTable({
   userId,
@@ -15,6 +16,8 @@ export default function FormDeleteUserActionTable({
   userId: string
   username: string
 }) {
+  const closeRef = useRef<HTMLButtonElement | null>(null)
+
   const schema = z.object({
     username: z.literal(username),
   })
@@ -33,6 +36,8 @@ export default function FormDeleteUserActionTable({
         variant: 'destructive',
       })
     }
+
+    closeRef.current?.click()
   }
 
   return (
@@ -53,7 +58,7 @@ export default function FormDeleteUserActionTable({
           />
           <DialogFooter className='mt-5'>
             <Button>
-              <DialogClose>Cancel</DialogClose>
+              <DialogClose ref={closeRef}>Cancel</DialogClose>
             </Button>
             <Button variant={'ghost'} type='submit'>
               Submit
