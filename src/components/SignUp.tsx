@@ -15,10 +15,12 @@ import {
   FormMessage,
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
-import { useTransition } from 'react'
+import { useState, useTransition } from 'react'
+import { Eye, EyeOff } from 'lucide-react'
 
 export default function SignUp() {
   const [pending, startTransition] = useTransition()
+  const [type, setType] = useState<'password' | 'text'>('password')
 
   const form = useForm<z.infer<typeof signUpSchema>>({
     resolver: zodResolver(signUpSchema),
@@ -26,6 +28,7 @@ export default function SignUp() {
       email: '',
       password: '',
       username: '',
+      confirm: '',
     },
   })
 
@@ -40,6 +43,9 @@ export default function SignUp() {
       }
     }
   }
+
+  const handleType = () =>
+    setType((prev) => (prev === 'password' ? 'text' : 'password'))
 
   return (
     <Form {...form}>
@@ -82,8 +88,33 @@ export default function SignUp() {
           render={({ field }) => (
             <FormItem>
               <FormLabel>Password</FormLabel>
+              <div className='relative w-full'>
+                <FormControl>
+                  <Input placeholder='....' type={type} {...field} />
+                </FormControl>
+                <div
+                  className='absolute top-1/2 -translate-y-1/2 right-3 cursor-pointer'
+                  onClick={handleType}
+                >
+                  {type === 'password' ? (
+                    <Eye size={20} />
+                  ) : (
+                    <EyeOff size={20} />
+                  )}
+                </div>
+              </div>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name='confirm'
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Confirm Password</FormLabel>
               <FormControl>
-                <Input placeholder='....' {...field} />
+                <Input placeholder='....' type='password' {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
