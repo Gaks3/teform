@@ -3,19 +3,15 @@ import {
   Card,
   CardContent,
   CardDescription,
+  CardFooter,
   CardHeader,
   CardTitle,
 } from '@/components/ui/card'
-import { getUser } from '@/lib/auth'
-import { redirect } from 'next/navigation'
+import Link from 'next/link'
 
 export default async function Page() {
-  const user = await getUser()
-
-  if (user) return redirect('/')
-
   return (
-    <Card className='min-w-96'>
+    <Card className='min-w-80 md:min-w-96'>
       <CardHeader>
         <CardTitle>Sign In</CardTitle>
         <CardDescription>Create your account</CardDescription>
@@ -23,6 +19,14 @@ export default async function Page() {
       <CardContent>
         <SignIn />
       </CardContent>
+      <CardFooter>
+        <span className='text-sm'>
+          Don&apos;t have account?{' '}
+          <Link href={'/sign-up'} className='underline'>
+            Sign Up here
+          </Link>
+        </span>
+      </CardFooter>
     </Card>
   )
 }
