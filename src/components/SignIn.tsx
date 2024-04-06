@@ -15,10 +15,12 @@ import {
 } from './ui/form'
 import { Input } from './ui/input'
 import { Button } from './ui/button'
-import { useTransition } from 'react'
+import { useState, useTransition } from 'react'
+import { Eye, EyeOff } from 'lucide-react'
 
 export default function SignIn() {
   const [pending, startTransition] = useTransition()
+  const [type, setType] = useState<'password' | 'text'>('password')
 
   const form = useForm<z.infer<typeof signInSchema>>({
     resolver: zodResolver(signInSchema),
@@ -31,14 +33,13 @@ export default function SignIn() {
   const onSubmit = async (values: z.infer<typeof signInSchema>) => {
     const res = await signIn(values)
 
-    if (typeof res?.error === 'object') {
-      for (const key in res.error) {
-        form.setError(key as 'email' | 'password', {
-          message: res.error[key as 'email' | 'username' | 'password'],
-        })
-      }
+    if (res?.error?.root) {
+      form.setError('root', { message: res.error.root })
     }
   }
+
+  const handleType = () =>
+    setType((prev) => (prev === 'password' ? 'text' : 'password'))
 
   return (
     <Form {...form}>
@@ -68,14 +69,27 @@ export default function SignIn() {
           render={({ field }) => (
             <FormItem>
               <FormLabel>Password</FormLabel>
-              <FormControl>
-                <Input {...field} />
-              </FormControl>
-              <FormMessage />
+              <div className='w-full relative'>
+                <FormControl>
+                  <Input type={type} {...field} />
+                </FormControl>
+                <div
+                  className='absolute top-1/2 -translate-y-1/2 right-3 cursor-pointer'
+                  onClick={handleType}
+                >
+                  {type === 'password' ? (
+                    <Eye size={18} />
+                  ) : (
+                    <EyeOff size={18} />
+                  )}
+                </div>
+              </div>
             </FormItem>
           )}
         />
-        {form.formState.errors && <FormMessage />}
+        {form.formState.errors.root && (
+          <FormMessage>{form.formState.errors.root.message}</FormMessage>
+        )}
         <Button type='submit' disabled={pending}>
           {pending ? 'Loading...' : 'Submit'}
         </Button>
