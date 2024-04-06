@@ -1,4 +1,5 @@
 import FormSubmit from '@/components/FormSubmit'
+import UnauthorizedUser from '@/components/UnauthorizedUser'
 import { AddVisits } from '@/lib/actions/form'
 import { GetQuestionsByFormId } from '@/lib/actions/question'
 import { getUser } from '@/lib/auth'
@@ -15,7 +16,7 @@ export default async function Page({
   if (!form.isAnonymous) {
     const user = await getUser()
 
-    if (!user) return notFound()
+    if (!user) return <UnauthorizedUser />
   }
 
   const questions = await GetQuestionsByFormId(form.id)
