@@ -5,6 +5,11 @@ import type { NextRequest } from 'next/server'
 export async function middleware(request: NextRequest): Promise<NextResponse> {
   const response = NextResponse.next()
 
+  response.headers.set(
+    'x-url',
+    request.nextUrl.origin + request.nextUrl.pathname
+  )
+
   if (!request.nextUrl.pathname.includes('sign-in' || 'sign-up'))
     response.cookies.set({
       name: 'callback_url',
