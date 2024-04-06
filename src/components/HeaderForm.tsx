@@ -1,7 +1,6 @@
 'use client'
 
 import { useForm } from 'react-hook-form'
-import SaveFormButton from './SaveFormButton'
 import {
   Card,
   CardDescription,
@@ -12,12 +11,22 @@ import {
 import { Input } from './ui/input'
 import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { Form, FormControl, FormField, FormItem, FormLabel } from './ui/form'
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from './ui/form'
 import { UpdateForm } from '@/lib/actions/form'
 import { toast } from './ui/use-toast'
 import { Switch } from './ui/switch'
+import { Button } from './ui/button'
+import { ScanEye, Share } from 'lucide-react'
+import Link from 'next/link'
 
-const schema = z.object({
+export const schema = z.object({
   name: z.string().min(1),
   description: z.string().min(1),
   anonymous: z.boolean().default(false),
@@ -51,6 +60,11 @@ export default function HeaderForm({
         description: values.description,
         anonymous: values.anonymous,
       })
+
+      toast({
+        title: 'Success',
+        description: 'Form has been saved',
+      })
     } catch (error) {
       toast({
         title: 'Something went wrong',
@@ -59,12 +73,20 @@ export default function HeaderForm({
     }
   }
 
+  const copyToClipboard = () => {
+    navigator.clipboard.writeText(`${window.location.host}/submit/${id}`)
+
+    toast({
+      title: 'Copied to clipboard',
+    })
+  }
+
   return (
     <>
       <Card className='w-full h-fit'>
         <Form {...form}>
           <form
-            onSubmit={(event) => event.preventDefault()}
+            onSubmit={form.handleSubmit(applyChanges)}
             onBlur={form.handleSubmit(applyChanges)}
           >
             <CardHeader className='border-t-4 rounded-md border-primary'>
@@ -81,6 +103,7 @@ export default function HeaderForm({
                           placeholder='Form Title'
                         />
                       </FormControl>
+                      <FormMessage />
                     </CardTitle>
                   </FormItem>
                 )}
@@ -98,12 +121,17 @@ export default function HeaderForm({
                           placeholder='Description'
                         />
                       </FormControl>
+                      <FormMessage />
                     </CardDescription>
                   </FormItem>
                 )}
               />
             </CardHeader>
-            <CardFooter className='justify-between'>
+          </form>
+        </Form>
+        <CardFooter className='justify-between'>
+          <Form {...form}>
+            <form onChange={form.handleSubmit(applyChanges)}>
               <FormField
                 control={form.control}
                 name='anonymous'
@@ -113,16 +141,35 @@ export default function HeaderForm({
                     <FormControl>
                       <Switch
                         checked={field.value}
-                        onCheckedChange={field.onChange}
+                        onCheckedChange={(checked) => {
+                          field.onChange(checked)
+                          form.handleSubmit(applyChanges)
+                        }}
                       />
                     </FormControl>
                   </FormItem>
                 )}
               />
-              <SaveFormButton id={id} />
-            </CardFooter>
-          </form>
-        </Form>
+            </form>
+          </Form>
+          <div className='flex gap-3'>
+            <Button
+              className='gap-2'
+              variant={'ghost'}
+              onClick={copyToClipboard}
+              type='button'
+            >
+              <Share size={18} />
+              Share
+            </Button>
+            <Button className='gap-2' variant={'ghost'} asChild>
+              <Link href={`/form/${id}/preview`}>
+                <ScanEye size={18} />
+                Preview
+              </Link>
+            </Button>
+          </div>
+        </CardFooter>
       </Card>
     </>
   )
