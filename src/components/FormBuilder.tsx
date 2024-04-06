@@ -20,7 +20,7 @@ import useDesigner from '@/lib/hooks/useDesigner'
 import { ElementsType, FormElementInstance, FormElements } from './FormElements'
 import ElementWrapper from './ElementWrapper'
 import HeaderForm from './HeaderForm'
-import { Plus } from 'lucide-react'
+import { LoaderCircle, Plus } from 'lucide-react'
 import { idGenerator } from '@/lib/utils'
 import { useAutoAnimate } from '@formkit/auto-animate/react'
 import { Form } from '@prisma/client'
@@ -38,6 +38,7 @@ export default function FormBuilder({
     elements,
     selectedElement,
     addElement,
+    setFormId,
   } = useDesigner()
   const [isReady, setIsReady] = useState(false)
   const [parent] = useAutoAnimate()
@@ -82,11 +83,12 @@ export default function FormBuilder({
 
     setElements(element || [])
     setSelectedElement(null)
+    setFormId(form.id)
 
     const readyTimeout = setTimeout(() => setIsReady(true), 500)
 
     return () => clearTimeout(readyTimeout)
-  }, [isReady, setElements, setSelectedElement, element])
+  }, [isReady, setElements, setSelectedElement, element, form, setFormId])
 
   return (
     <DndContext
@@ -104,7 +106,7 @@ export default function FormBuilder({
           ref={parent}
           className='w-[95vw] md:w-[75vw] lg:w-[70vw] flex flex-col gap-3 p-4 items-center mb-10'
         >
-          {isReady && (
+          {isReady ? (
             <>
               <HeaderForm
                 id={form.id}
@@ -124,6 +126,11 @@ export default function FormBuilder({
                 <Plus onClick={appendElement} />
               </div>
             </>
+          ) : (
+            <div className='w-full flex flex-col justify-center items-center gap-5'>
+              <LoaderCircle className='animate-spin text-primary' />
+              <p>Setup form builder, Please wait.....</p>
+            </div>
           )}
         </div>
       </div>
