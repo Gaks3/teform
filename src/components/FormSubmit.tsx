@@ -77,8 +77,8 @@ export default function FormSubmit({
 
   if (submitted)
     return (
-      <div className='flex justify-center w-full h-full p-8'>
-        <div className='w-[95vw] md:w-[80vw] lg:w-[60vw] border rounded-md border-border'>
+      <div className='flex justify-center w-full h-full p-8 min-h-screen bg-primary/10'>
+        <div className='w-[95vw] md:w-[80vw] lg:w-[60vw] h-fit border rounded-md border-border max-w-screen-sm bg-card'>
           <div className='w-full h-3 bg-primary rounded-t-md' />
           <div className='p-8 space-y-3'>
             <h1 className='text-3xl font-bold'>Thankyou for submitting!</h1>
@@ -88,10 +88,10 @@ export default function FormSubmit({
     )
 
   return (
-    <div className='flex justify-center w-full h-full p-8 bg-primary/10'>
+    <div className='flex justify-center w-full h-full p-8 bg-primary/10 min-h-screen'>
       <div
         key={renderKey}
-        className='max-w-[620px] flex flex-col gap-4 flex-grow w-full overflow-y-auto'
+        className='max-w-screen-sm flex flex-col gap-4 flex-grow w-full overflow-y-auto'
       >
         <Card className='border-t-8 border-t-primary'>
           <CardHeader>
