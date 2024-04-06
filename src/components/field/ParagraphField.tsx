@@ -235,7 +235,7 @@ export const ResultComponent = ({
   values,
 }: {
   elementInstance: FormElementInstance
-  values: string[]
+  values: string[] | { id: string; value: number }[]
 }) => {
   const element = elementInstance as CustomInstance
 
@@ -252,7 +252,7 @@ export const ResultComponent = ({
             key={index}
             className='w-full px-2 py-3 bg-secondary text-secondary-foreground'
           >
-            {value}
+            {value as string}
           </div>
         ))}
       </CardContent>
