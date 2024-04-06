@@ -27,6 +27,10 @@ export default function FormDeleteFormActionTable({
   const onSubmit = async () => {
     try {
       await DeleteForm(formId)
+
+      toast({
+        title: 'Success to delete form',
+      })
     } catch (error) {
       toast({
         title: 'Error',
