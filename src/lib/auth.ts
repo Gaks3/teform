@@ -34,7 +34,6 @@ interface DatabaseUserAttributes {
 
 import { cookies } from 'next/headers'
 import { cache } from 'react'
-import { redirect } from 'next/navigation'
 
 export const getUser = cache(async () => {
   const sessionId = cookies().get(lucia.sessionCookieName)?.value ?? null
@@ -60,8 +59,9 @@ export const getUser = cache(async () => {
         sessionCookie.attributes
       )
     }
-  } catch {
-    redirect('/sign-up')
+  } catch (error) {
+    console.log(error)
+    return null
   }
 
   return { user, session }
