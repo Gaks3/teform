@@ -66,6 +66,7 @@ model Question {
   answers Answer[]
 
   @@map("question")
+  @@unique([formId, idElement])
 }
 
 enum QuestionType {
@@ -93,7 +94,7 @@ model Answer {
   id  Int @id @default(autoincrement())
   response  Response @relation(fields: [responseId], references: [id], onDelete: Cascade)
   responseId  Int
-  question  Question @relation(fields: [questionId], references: [id])
+  question  Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
   questionId  Int
   value String  @db.Text
 
