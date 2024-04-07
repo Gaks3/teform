@@ -61,7 +61,6 @@ export const getUser = cache(async () => {
     }
   } catch (error) {
     console.log(error)
-    return null
   }
 
   return { user, session }
