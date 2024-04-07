@@ -13,6 +13,7 @@ interface ActionResult {
     email?: string
     username?: string
     password?: string
+    root?: string
   }
 }
 
@@ -60,8 +61,7 @@ export async function signIn(
   if (!user)
     return {
       error: {
-        email: 'Invalid email or password',
-        password: 'Invalid email or password',
+        root: 'Invalid email or password',
       },
     }
 
@@ -72,8 +72,7 @@ export async function signIn(
   if (!validPassword)
     return {
       error: {
-        email: 'Invalid email or password',
-        password: 'Invalid email or password',
+        root: 'Invalid email or password',
       },
     }
 
