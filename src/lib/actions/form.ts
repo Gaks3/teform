@@ -142,7 +142,7 @@ export async function UpdateForm(
   await prisma.form.update({
     where: {
       id,
-      userId: user.user.id,
+      ...(!user.user.isAdmin && { userId: user.user.id }),
     },
     data: updateData,
   })
@@ -250,5 +250,10 @@ export async function DeleteForm(formId: string) {
 
   if (!user.user?.isAdmin) where['userId'] = user.user?.id
 
-  await prisma.form.delete({ where })
+  const data = await prisma.form.delete({ where })
+
+  revalidatePath('/')
+  revalidatePath('/dashboard/form')
+
+  return data
 }
